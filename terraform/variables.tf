@@ -34,3 +34,9 @@ data "aws_ami" "amazon_linux_2023" {
   }
 }
 
+variable "allowed_http_cidr" {
+  description = "allowed http cidr for egress traffic"
+  type = string
+  default = "10.0.0.0/24"
+}
+

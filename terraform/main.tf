@@ -15,7 +15,7 @@ resource "aws_security_group" "app_server_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = "${var.allowed_http_cidr}"
   }
 
   ingress {
@@ -27,10 +27,18 @@ resource "aws_security_group" "app_server_sg" {
   }
 
   egress {
-    description = "Allow all outbound traffic"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    description = "Allow HTTPS outbound traffic"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = "${var.allowed_http_cidr}"
+  }
+
+   egress {
+    description = "Allow HTTP outbound traffic"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 

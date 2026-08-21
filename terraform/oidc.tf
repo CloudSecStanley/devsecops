@@ -65,6 +65,11 @@ resource "aws_iam_policy" "github_actions_deployment_policy" {
           "ec2:CreateTags"
         ]
         Resource = "*"
+        Condition = {
+          StringEquals = {
+            "aws:RequestTag/Environment" = var.environment
+          }
+        }
       },
       {
         Sid    = "IAMPassRolePermissions"
