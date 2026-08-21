@@ -93,7 +93,8 @@ resource "aws_instance" "app_server" {
 
   # Encrypted EBS volume for root device
   root_block_device {
-    encrypted = true
+    volume_type = "gp3"
+    encrypted   = true
   }
 
   # Startup script to install and start docker to run nginx server container

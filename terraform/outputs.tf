@@ -15,7 +15,7 @@ output "ec2_instance_id" {
 
 output "security_group_id" {
   description = "ID of the NGINX server"
-  value = aws_security_group.app_server_sg
+  value = aws_security_group.app_server_sg.id
 }
 
 output "github_actions_role_arn" {

@@ -1,0 +1,66 @@
+name: DevSecOps CI/CD Pipeline
+
+on: 
+    push: 
+        branches: [ main ]
+    pull_request: 
+        branches: [ main ]
+
+permissions: 
+    id-token: write # required for OIDC authentication with AWS
+    contents: read # required to clone the repository
+
+jobs:
+    security-scans:
+        name: Security & Static Analysis
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Lint Dockerfile with hadolint
+              uses: hadolint/hadolint-action@v3.4.0
+              with:
+                  dockerfile: Dockerfile
+
+            - name: Checkov IAC Security scan
+              uses: bridgecrewio/checkov-action@master
+              with:
+                  framework: terraform
+                  directory: terraform/
+
+    deploy-infrastructure:
+        name: Provision AWS Infrastructure
+        needs: security-scans
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Terraform
+              uses: hashicorp/setup-terraform@v3
+              with:
+                  terraform_version: 1.5.0
+
+            - name: Configure AWS Credentials Via OIDC
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                  role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+                  aws-region: us-east-1
+
+            - name: Terraform Init
+              run: terraform init
+              working-directory: terraform
+
+            - name: Terraform Validate
+              run: terraform validate
+              working-directory: terraform
+
+            - name: Terraform Plan
+              run: terraform plan
+              working-directory: terraform
+
+            - name: Terraform Apply
+              run: terraform apply -auto-approve
+              working-directory: terraform

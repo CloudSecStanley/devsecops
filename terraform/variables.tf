@@ -30,7 +30,7 @@ data "aws_ami" "amazon_linux_2023" {
 
   filter {
     name   = "name"
-    values = ["amzn-linux-2023-*-hvm-*-x86_64-gp3"]
+    values = ["al2023-ami-*-x86_64"]
   }
 }
 
