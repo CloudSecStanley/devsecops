@@ -21,3 +21,16 @@ variable "environment" {
   type        = string
   default     = "devsecops"
 }
+
+# Amazon linux 2023 AMI lookup 
+
+data "aws_ami" "amazon_linux_2023" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn-linux-2023-*-hvm-*-x86_64-gp3"]
+  }
+}
+
