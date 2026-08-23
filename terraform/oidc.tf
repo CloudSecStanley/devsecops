@@ -5,7 +5,8 @@ resource "aws_iam_openid_connect_provider" "github_actions" {
 
   thumbprint_list = [
     "6938fd4d98bab03faadb97b34396831e3780aea1",
-    "1c58a21852c0022d550d7d3d19814421dd1c73a0"
+    "1c58a21852c0022d550d7d3d19814421dd1c73a0",
+    "d89e3bd43d5d909b47a189773021504365232236"
   ]
 }
 
@@ -23,14 +24,12 @@ resource "aws_iam_role" "github_actions_role" {
         }
         Action = "sts:AssumeRoleWithWebIdentity"
         Condition = {
-          StringEquals = {
-            "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
-          }
-          StringLike = {
-            "token.actions.githubusercontent.com:sub" = "repo:CloudSecStanley/devsecops:*"
-          }
+            StringEquals = {
+              "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
+              "token.actions.githubusercontent.com:sub" = "repo:CloudSecStanley/devsecops:ref:refs/heads/main"
+              }
+            }
         }
-      }
     ]
   })
 }
