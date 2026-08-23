@@ -47,16 +47,23 @@ resource "aws_iam_policy" "github_actions_deployment_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid    = "EC2ProvisioningPermissions"
+        Sid    = "EC2ReadPermissions"
         Effect = "Allow"
         Action = [
-          "ec2:RunInstances",
-          "ec2:TerminateInstances",
           "ec2:DescribeInstances",
           "ec2:DescribeImages",
           "ec2:DescribeVpcs",
           "ec2:DescribeSubnets",
-          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeSecurityGroups"
+        ]
+        Resource = "*"
+      },
+      {
+        Sid    = "EC2WritePermissions"
+        Effect = "Allow"
+        Action = [
+          "ec2:RunInstances",
+          "ec2:TerminateInstances",
           "ec2:CreateSecurityGroup",
           "ec2:DeleteSecurityGroup",
           "ec2:AuthorizeSecurityGroupIngress",
@@ -66,8 +73,12 @@ resource "aws_iam_policy" "github_actions_deployment_policy" {
           "ec2:CreateTags"
         ]
         Resource = "*"
+        Condition = {
+          StringEquals = {
+            "aws:RequestedRegion" = "us-east-1"
+          }
+        }
       },
-
       {
         Sid    = "IAMPassRolePermissions"
         Effect = "Allow"
