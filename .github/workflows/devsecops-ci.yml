@@ -43,6 +43,13 @@ jobs:
               with:
                   terraform_version: 1.5.0
 
+            - name: Debug OIDC Token Claims
+              run: |
+                TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+                  "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r '.value')
+                echo "=== OIDC TOKEN CLAIMS ==="
+                jq -R 'split(".") | .[1] | @base64d | fromjson' <<< "$TOKEN"
+
             - name: Configure AWS Credentials Via OIDC
               uses: aws-actions/configure-aws-credentials@v4
               with:
