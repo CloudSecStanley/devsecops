@@ -2,12 +2,7 @@
 resource "aws_iam_openid_connect_provider" "github_actions" {
   url            = "https://token.actions.githubusercontent.com"
   client_id_list = ["sts.amazonaws.com"]
-
-  thumbprint_list = [
-    "6938fd4d98bab03faadb97b34396831e3780aea1",
-    "1c58a21852c0022d550d7d3d19814421dd1c73a0",
-    "d89e3bd43d5d909b47a189773021504365232236"
-  ]
+  thumbprint_list = [data.tls_certificate.github.certificates[0].sha1_fingerprint]
 }
 
 # IAM Role for GitHub Actions OIDC Authentication

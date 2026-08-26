@@ -40,3 +40,9 @@ variable "allowed_http_cidr" {
   default = "10.0.0.0/24"
 }
 
+# Fetch GitHub's OIDC TLS Certificate chain dynamically
+data "tls_certificate" "github" {
+  url = "https://token.actions.githubusercontent.com"
+}
+
+
